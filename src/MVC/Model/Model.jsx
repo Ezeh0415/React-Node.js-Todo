@@ -1,7 +1,8 @@
 import useFetch from "../../DbFetch/apiFetch";
 
 const getTodo = () => {
-  const { data, loading, error } = useFetch("http://localhost:5000/api/hello");
+  const API_BASE_URL = "https://todo-backend-server-production.up.railway.app";
+  const { data, loading, error } = useFetch(`${API_BASE_URL}/api/hello`);
   return { data, loading, error };
 };
 

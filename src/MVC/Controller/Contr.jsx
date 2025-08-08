@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const TodoContext = createContext();
 
 export const TodoProvider = ({ children }) => {
+  const API_BASE_URL = "https://todo-backend-server-production.up.railway.app";
   const navigate = useNavigate();
   const { data, loading, error } = getTodos();
   const [formData, setFormData] = useState({
@@ -29,26 +30,27 @@ export const TodoProvider = ({ children }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    fetch("http://localhost:5000/createTodo", {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
+    console.log(JSON.stringify(formData));
+      fetch(`${API_BASE_URL}/createTodo`, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
       })
-      .then((json) => {
-        console.log(json);
-      })
-      .catch((err) => console.error("Request failed:", err));
-      setFormData({ title: "", email: "", blog: "" });
-      navigate("/");
-      window.location.reload();
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((json) => {
+          console.log(json);
+        })
+        .catch((err) => console.error("Request failed:", err));
+        setFormData({ title: "", email: "", blog: "" });
+        navigate("/");
+        window.location.reload();
   };
   // search section
   const [search, setSearch] = useState(false);
@@ -94,7 +96,7 @@ export const TodoProvider = ({ children }) => {
   // get single todo
   const [getTodo, setGetTodo] = useState();
   const handleGet = (id) => {
-    fetch(`http://localhost:5000/getTodo/${id}`)
+    fetch(`${API_BASE_URL}/getTodo/${id}`)
       .then((response) => response.json())
       .then((json) => {
         setGetTodo(json.data);
@@ -105,7 +107,7 @@ export const TodoProvider = ({ children }) => {
   // delete section
 
   const handleDelete = (id) => {
-    fetch(`http://localhost:5000/deleteTodo/${id}`, {
+    fetch(`${API_BASE_URL}/deleteTodo/${id}`, {
       method: "DELETE",
     })
       .then((response) => response.json())
@@ -113,6 +115,7 @@ export const TodoProvider = ({ children }) => {
         console.log(json);
       });
     navigate("/");
+    window.location.reload();
   };
 
   return (
